@@ -1,5 +1,5 @@
 # 生成左侧菜单配置
-from spider_admin import init, syncMenu
+from spider.spider_admin import init, syncMenu
 
 if __name__ == '__main__':
     init()

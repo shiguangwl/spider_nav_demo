@@ -4,7 +4,7 @@ import re
 import requests
 from lxml import etree
 
-from Logger import logger
+from common.Logger import logger
 def fetchData(url):
     response = requests.get(url)
     if response.status_code == 200:
@@ -98,7 +98,7 @@ if __name__ == '__main__':
     jsonStr = json.dumps(r)
     print(jsonStr)
     # 写入本地文件  out.json
-    with open("outPornDude.json", "w", encoding="utf-8") as f:
+    with open("../outPornDude.json", "w", encoding="utf-8") as f:
         f.write(jsonStr)
 
 

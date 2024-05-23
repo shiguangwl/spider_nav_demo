@@ -2,21 +2,18 @@ import math
 import random
 import re
 import uuid
-import xmlrpc.client
 from urllib.parse import quote
 
 from pypinyin import pinyin, Style
 from wordpress_xmlrpc import WordPressPost, Client
-from wordpress_xmlrpc.methods import taxonomies, posts
 from wordpress_xmlrpc.methods.posts import GetPosts, NewPost
 import requests
 from lxml import etree
 import json
 import html
 
-from wordpress_xmlrpc.methods.taxonomies import GetTerms
 
-from Logger import logger
+from common.Logger import logger
 
 mySession = requests.session()
 domain = ""

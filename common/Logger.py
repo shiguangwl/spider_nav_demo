@@ -31,11 +31,11 @@ class CustomLogger:
             message += f" Error: {error}"
         self.logger.error(message)
 
-logger = CustomLogger("app.log")
+logger = CustomLogger("../app.log")
 
 if __name__ == "__main__":
     # 设置日志文件路径
-    log_file_path = "app.log"
+    log_file_path = "../app.log"
 
     # 实例化日志工具类
     logger = CustomLogger(log_file_path)

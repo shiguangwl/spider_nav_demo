@@ -2,8 +2,8 @@ import json
 
 from pypinyin import pinyin, Style
 
-from Logger import logger
-from spider_admin import init, getCategoty, getLinkDescAll, addCategory, addLink
+from common.Logger import logger
+from spider.spider_admin import init, getCategoty, getLinkDescAll, addCategory, addLink
 
 
 def chinese_to_pinyin(text):

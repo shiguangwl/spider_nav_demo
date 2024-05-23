@@ -2,9 +2,9 @@
 import json
 import time
 
-from Logger import logger
-from spider_admin import postBlog, getPost
-from spider_site import getBlogDatas
+from common.Logger import logger
+from spider.spider_admin import postBlog, getPost
+from spider.spider_site import getBlogDatas
 
 if __name__ == '__main__':
     channels = [

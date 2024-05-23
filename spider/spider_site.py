@@ -5,7 +5,7 @@ import requests
 from lxml import etree
 import json
 
-from Logger import logger
+from common.Logger import logger
 
 
 def spiderSite():

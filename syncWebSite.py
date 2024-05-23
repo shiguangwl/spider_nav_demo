@@ -1,9 +1,8 @@
-import json
 from collections import defaultdict
 
-from Logger import logger
-from spider_admin import getCategoty, init, addCategory, getLinkDesc, getLinkDescAll, addLink, updateLinkInfo
-from spider_site import spiderSite
+from common.Logger import logger
+from spider.spider_admin import getCategoty, init, addCategory, getLinkDescAll, addLink, updateLinkInfo
+from spider.spider_site import spiderSite
 
 if __name__ == '__main__':
     spderData = spiderSite()
