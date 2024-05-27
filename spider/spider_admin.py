@@ -127,10 +127,10 @@ def getLinkDescAll():
             else:
                 continue
             logger.info("开始抓取后台数据： " + descLink)
-            # descLink = 'https://c7c.com/wp-admin/post.php?post=924&action=edit'
+            # descLink = f'{domain}/wp-admin/post.php?post=924&action=edit'
             desc_text = mySession.get(descLink).text
             html_tree = etree.HTML(desc_text)
-            # id  https://c7c.com/sites/1157.html 截取  1157
+            # id  https://xxx.com/sites/1157.html 截取  1157
             id = html_tree.xpath('//*[@id="sample-permalink"]/@href')[0].split('/')[-1].split('.')[0]
             # 标题
             title = html_tree.xpath('//*[@id="title"]/@value')[0]
@@ -295,7 +295,7 @@ def addLink(
 
     mySession.post(url, data=payload)
 
-    logger.info(f"链接已提交：https://c7c.com/sites/{post_ID}.html")
+    logger.info(f"链接已提交：{domain}/sites/{post_ID}.html")
 
 
 # 修改链接
@@ -332,7 +332,7 @@ def updateLinkInfo(
     add_comment_nonce = newPageTree.xpath('//input[@id="add_comment_nonce"]/@value')[0]
     _ajax_fetch_list_nonce = newPageTree.xpath('//input[@id="_ajax_fetch_list_nonce"]/@value')[0]
 
-    url = 'https://c7c.com/wp-admin/post.php'
+    url = f'{domain}/wp-admin/post.php'
 
     data = {
         '_wpnonce': _wpnonce,
@@ -343,8 +343,8 @@ def updateLinkInfo(
         'post_author': '1',
         'post_type': 'sites',
         'original_post_status': 'publish',
-        'referredby': 'https://c7c.com/wp-admin/edit.php?post_type=sites',
-        '_wp_original_http_referer': 'https://c7c.com/wp-admin/edit.php?post_type=sites',
+        'referredby': f'{domain}/wp-admin/edit.php?post_type=sites',
+        '_wp_original_http_referer': f'{domain}/wp-admin/edit.php?post_type=sites',
         'post_ID': postId,
         'meta-box-order-nonce': meta_box_order_nonce,
         'closedpostboxesnonce': closedpostboxesnonce,
@@ -433,7 +433,7 @@ def updateLinkInfo(
     }
 
     response = mySession.post(url, data=data)
-    logger.info(f"链接已更新：https://c7c.com/sites/{postId}.html")
+    logger.info(f"链接已更新：{domain}/sites/{postId}.html")
 
 
 def chinese_to_pinyin(text):
@@ -459,10 +459,10 @@ def addCategory(
     ).text
     newPageTree = etree.HTML(newPageText)
     _wpnonce_add_tag = newPageTree.xpath("//input[@name='_wpnonce_add-tag']/@value")[0]
-    # csf_taxonomy_noncefavorites_options = \
-    # newPageTree.xpath("//input[@name='csf_taxonomy_noncefavorites_options']/@value")[0]
+    csf_taxonomy_noncefavorites_options = \
+    newPageTree.xpath("//input[@name='csf_taxonomy_noncefavorites_options']/@value")[0]
 
-    url = 'https://c7c.com/wp-admin/admin-ajax.php'
+    url = f"{domain}/wp-admin/admin-ajax.php"
     data = {
         'action': 'add-tag',
         'screen': 'edit-favorites',
@@ -475,7 +475,6 @@ def addCategory(
         'parent': categoryParent,
         'description': categoryDescription,
         'csf_taxonomy_noncefavorites_options': csf_taxonomy_noncefavorites_options,
-        '_wp_http_referer': '/wp-admin/edit-tags.php?taxonomy=favorites&post_type=sites',
         'favorites_options[_term_order]': '0',
         'favorites_options[seo_title]': categorySeoTitle,
         'favorites_options[seo_metakey]': categorySeoMetakey,
@@ -552,7 +551,7 @@ def syncMenu():
                 "type_label": "网址分类"
             }
 
-    firstUrl = 'https://c7c.com/wp-admin/customize.php?theme=onenav&return=https://c7c.com/wp-admin/themes.php'
+    firstUrl = f'{domain}/wp-admin/customize.php?theme=onenav&return={domain}/wp-admin/themes.php'
     rexStr = '{"save":"(.+)","preview":"(.+)","switch_themes'
     html_text = mySession.get(firstUrl)
     match = re.search(rexStr, html_text.text)
@@ -561,7 +560,7 @@ def syncMenu():
         saveCode = match.group(1)
         previewCode = match.group(2)
 
-        url = 'https://c7c.com/wp-admin/admin-ajax.php'
+        url = f'{domain}/wp-admin/admin-ajax.php'
         # p = {
         #     "nav_menu_item[-5617926963124259000]": {
         #         "object_id": 92,
@@ -677,7 +676,7 @@ def getPost():
     cureentPageNum = 1
     rData = []
     while cureentPageNum <= pageNum:
-        htmlTree = etree.HTML(mySession.get('https://c7c.com/wp-admin/edit.php?paged=' + str(cureentPageNum)).text)
+        htmlTree = etree.HTML(mySession.get(f'{domain}/wp-admin/edit.php?paged=' + str(cureentPageNum)).text)
         pageNum = int(htmlTree.xpath('//*[@id="table-paging"]/span/span/text()')[0])
         trs = htmlTree.xpath('//*[@id="the-list"]//tr')
         for tr in trs:
