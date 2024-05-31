@@ -1,9 +1,11 @@
 import json
+import os
 
 from pypinyin import pinyin, Style
 
 from common.Logger import logger
 from spider.spider_admin import init, getCategoty, getLinkDescAll, addCategory, addLink
+from spider.spider_theporndude import getData
 
 
 def chinese_to_pinyin(text):
@@ -14,39 +16,40 @@ def chinese_to_pinyin(text):
     return ''.join([item[0] for item in pinyin_list])
 
 if __name__ == '__main__':
-    init('https://zgroup.ai','admin','admin123')
+    init('https://wuyex.com','admin','admin123')
     logger.info("开始同步数据")
-    # categorys = getCategoty()
-    # logger.info("categorys：" + str(categorys))
+    categorys = getCategoty()
+    logger.info("categorys len：" + str(len(categorys)))
     allLinks = getLinkDescAll()
     logger.info("allLinks len：" + str(len(allLinks)))
 
     # 加载本地json数据
+    # datas = getData()
+    # 读取本地datas文件夹中所有数据
     datas = []
-    with open('outPornDude.json', 'r') as file:
-        datas = json.load(file)
+    for root, dirs, files in os.walk("./datas"):
+        for file in files:
+            with open(f"./datas/{file}", "r", encoding="utf-8") as f:
+                datas.append(json.load(f))
 
-    # categoryNames = {i['title'] for i in categorys}
-    # for item in datas:
-    #     # 判断分类是否存在
-    #     if item['categoryName'] not in categoryNames:
-    #         logger.info("开始创建分类：" + item['categoryName'])
-    #         # 创建分类
-    #         addCategory(
-    #             item['categoryName'],
-    #             chinese_to_pinyin(item['categoryName']),
-    #             "-1",
-    #             item['categoryDesc'],
-    #             "",
-    #             "",
-    #             "",
-    #         )
+    categoryNames = {i['title'] for i in categorys}
+    for item in datas:
+        # 判断分类是否存在
+        if item['categoryName'] not in categoryNames:
+            logger.info("开始创建分类：" + item['categoryName'])
+            # 创建分类
+            addCategory(
+                item['categoryName'],
+                chinese_to_pinyin(item['categoryName']),
+                "-1",
+                item['categoryDesc'],
+                "",
+                "",
+                "",
+            )
 
-    # # 重新获取分类数据
-    # categorys = getCategoty()
-    with open('outCategory.json', 'r') as file:
-        categorys = json.load(file)
-
+    # 重新获取分类数据
+    categorys = getCategoty()
     categoryIds = {i['title']: i['id'] for i in categorys}
     # 同步链接
     for item in datas:
@@ -54,7 +57,7 @@ if __name__ == '__main__':
             # 判断链接是否存在
             isExist = False
             for exitedLink in allLinks:
-                if link['title'] == exitedLink['title'] and link['categoryName'] == exitedLink['categoryName'] :
+                if link['title'] == exitedLink['title'] and item['categoryName'] == exitedLink['categoryName']:
                     isExist = True
                     break
             if isExist:
@@ -72,4 +75,5 @@ if __name__ == '__main__':
                     link['title'],
                     link['title'],
                     link['title'],
+                    'https://zgroup.ai/proxy-dGltZWhv/' + link['thumbImg']
                 )

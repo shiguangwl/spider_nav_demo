@@ -144,8 +144,9 @@ def getLinkDescAll():
             categoryId_values = html_tree.xpath(
                 '//*[@id="favoriteschecklist"]//li/label/input[@checked="checked"]/@value')
             categoryId = categoryId_values[0] if categoryId_values else ""
-            # # 站点分类名称
+            # 站点分类名称
             # categoryName = html_tree.xpath('string(//*[@id="favoriteschecklist"]//li[contains(@checked, "checked")]/label)')[1:]
+            categoryName = html_tree.xpath('string(//*[@id="favoriteschecklist"]//input[contains(@checked, "checked")]/..)')
             # 一句话描述
             desc = html_tree.xpath(
                 'string(//*[@id="sites_post_meta"]/div[2]/div/div/div[2]/div/div[1]/div[9]/div[2]/textarea)')
@@ -155,7 +156,7 @@ def getLinkDescAll():
                 "content": content,
                 "siteLink": siteLink,
                 "categoryId": categoryId,
-                # "categoryName": categoryName,
+                "categoryName": categoryName,
                 "desc": desc,
             })
         currentPage += 1
@@ -179,6 +180,7 @@ def addLink(
         seo_title: str,
         seo_metake: str,
         seo_desc: str,
+        sites_preview: str = ''
 ):
     # 获取表单校验参数
     newPageText = mySession.get(
@@ -265,7 +267,7 @@ def addLink(
         "sites_post_meta[_sites_country]": "",
         "sites_post_meta[_sites_order]": "0",
         "sites_post_meta[_thumbnail]": "",
-        "sites_post_meta[_sites_preview]": "",
+        "sites_post_meta[_sites_preview]": sites_preview,
         "sites_post_meta[_wechat_qr]": "",
         "sites_post_meta[_down_version]": "",
         "sites_post_meta[_down_size]": "",
@@ -310,6 +312,7 @@ def updateLinkInfo(
         seo_title: str,
         seo_metakey: str,
         seo_desc: str,
+        sites_preview: str = ''
 ):
     # 获取表单校验参数
     newPageText = mySession.get(
@@ -404,7 +407,7 @@ def updateLinkInfo(
         'sites_post_meta[_sites_country]': '',
         'sites_post_meta[_sites_order]': '0',
         'sites_post_meta[_thumbnail]': '',
-        'sites_post_meta[_sites_preview]': '',
+        'sites_post_meta[_sites_preview]': sites_preview,
         'sites_post_meta[_wechat_qr]': '',
         'sites_post_meta[_down_version]': '',
         'sites_post_meta[_down_size]': '',
