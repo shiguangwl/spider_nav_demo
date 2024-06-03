@@ -16,7 +16,7 @@ def chinese_to_pinyin(text):
     return ''.join([item[0] for item in pinyin_list])
 
 if __name__ == '__main__':
-    init('https://wuyex.com','admin','admin123')
+    init('http://wuyex.com','admin','admin123')
     logger.info("开始同步数据")
     categorys = getCategoty()
     logger.info("categorys len：" + str(len(categorys)))
@@ -24,13 +24,15 @@ if __name__ == '__main__':
     logger.info("allLinks len：" + str(len(allLinks)))
 
     # 加载本地json数据
-    # datas = getData()
-    # 读取本地datas文件夹中所有数据
     datas = []
-    for root, dirs, files in os.walk("./datas"):
-        for file in files:
-            with open(f"./datas/{file}", "r", encoding="utf-8") as f:
-                datas.append(json.load(f))
+    # 读取本地datas文件夹中文件数量,确保顺序
+    files = os.listdir('./datas')
+    for i in range(len(files)):
+        # 读取 outPornDude-{i}.json
+        with open(f"./datas/outPornDude-{i}.json", "r", encoding="utf-8") as f:
+            data = json.load(f)
+            data['linkList'] = data['linkList'].reverse()
+            datas.append(data)
 
     categoryNames = {i['title'] for i in categorys}
     for item in datas:

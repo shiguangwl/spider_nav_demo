@@ -42,6 +42,7 @@ def extractCategoryData(categoryElement):
         }
         dataItems.append(dataItem)
 
+    temp_dict = {}
     # Use ThreadPoolExecutor to process the dataItems in parallel
     with ThreadPoolExecutor(max_workers=10) as executor:
         future_to_item = {executor.submit(extractDetailData, item['orgin']): item for item in dataItems}
@@ -55,14 +56,15 @@ def extractCategoryData(categoryElement):
                     item['url'] = detail['url']
                     item['content'] = detail['content']
                     item['thumbImg'] = detail['thumbImg']
-                    linkList.append(item)
+                    temp_dict[item['title']] = item
+                    # linkList.append(item)
                     print("抓取数据成功： " + item['title'] + "  " + item['url'])
                     break
                 except Exception as exc:
                     print(f"抓取详情失败: {exc} 尝试次数：{i}  {item['title']}  {item['orgin']}")
                     # 休眠3秒
                     time.sleep(1)
-
+    linkList = [temp_dict[item['title']] for item in dataItems]
     return {
         "categoryName": categoryName,
         "categoryDesc": categoryDesc,
