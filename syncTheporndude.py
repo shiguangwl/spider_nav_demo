@@ -31,10 +31,11 @@ if __name__ == '__main__':
         # 读取 outPornDude-{i}.json
         with open(f"./datas/outPornDude-{i}.json", "r", encoding="utf-8") as f:
             data = json.load(f)
-            data['linkList'] = data['linkList'].reverse()
+            data['linkList'].reverse()
             datas.append(data)
 
     categoryNames = {i['title'] for i in categorys}
+    isChange = False
     for item in datas:
         # 判断分类是否存在
         if item['categoryName'] not in categoryNames:
@@ -49,9 +50,13 @@ if __name__ == '__main__':
                 "",
                 "",
             )
+            isChange = True
+        else:
+            logger.info("分类已存在：" + item['categoryName'])
 
     # 重新获取分类数据
-    categorys = getCategoty()
+    if isChange:
+        categorys = getCategoty()
     categoryIds = {i['title']: i['id'] for i in categorys}
     # 同步链接
     for item in datas:
