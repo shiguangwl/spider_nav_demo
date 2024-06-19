@@ -61,6 +61,10 @@ def extractCategoryData(categoryElement):
     # 提取分类名称和描述
     categoryName = categoryElement.xpath('.//h2/a/text()')[0]
     categoryDesc = categoryElement.xpath('.//p[@class="desc"]/text()')[0]
+    try:
+        categoryShortDesc = categoryElement.xpath('./div[2]/div/text()')[0]
+    except:
+        categoryShortDesc = ''
     titleClass = categoryElement.xpath('.//h2/span/@class')[0]
     categoryIcon = extractCategoryIcon(titleClass.split(' ')[1])
     # 提取分类详情中的信息
@@ -72,16 +76,28 @@ def extractCategoryData(categoryElement):
     categorySlogan = categoryDetailTree.xpath('/html/body/div[1]/div[2]/div/div[3]/h1/span[2]/text()')[0]
     categoryContent =etree.tostring(categoryDetailTree.xpath('.//div[contains(@class,"category-desc")]/.')[0],method='html', encoding='unicode')
     # 移除categoryContent最外层div
-    categoryContent = re.sub(r'<div class="category-desc">|</div>', '', categoryContent)
-
+    categoryContent = categoryContent[
+        len('<div class="category-desc-wrapper v-scroll bottom-shadow"><div class="category-desc scrollbox">'):
+        -len('</div></div>')
+    ]
+    categoryThumb = ""
+    # 获取分类Thumb
+    for item in categoryDetailTree.xpath('//*[@class="url_links_wrapper url_links_wrapper_related"]//a'):
+        if item.xpath('.//span/text()')[0] == categoryName:
+            categoryThumb = item.xpath('.//img/@data-src')[0]
+            break
     # 提取链接数据项
     dataItems = []
     for linkItem in categoryElement.xpath('.//ul/li'):
         dataItem = {
             "title": linkItem.xpath('string(./a)'),
             "orgin": linkItem.xpath('.//a[contains(@class,"review")]/@href')[0],
-            "desc": linkItem.xpath('string(./p)')
+            "desc": linkItem.xpath('string(./p)'),
         }
+        try:
+            dataItem["flag"] = linkItem.xpath('./span/@class')[0]
+        except Exception as e:
+            dataItem["flag"] = ""
         dataItems.append(dataItem)
 
     # 多线程抓取链接详情页数据
@@ -97,29 +113,32 @@ def extractCategoryData(categoryElement):
                     item.update({
                         'url': detail['url'],
                         'content': detail['content'],
-                        'thumbImg': detail['thumbImg']
+                        'prosComment': detail['prosComment'],
+                        'consComment': detail['consComment'],
+                        'thumbImg': detail['thumbImg'],
                     })
                     temp_dict[item['title']] = item
                     print(f"抓取数据成功： {item['title']}  {item['url']}")
                     break
                 except Exception as exc:
-                    print(f"抓取详情失败: {exc} 尝试次数：{attempt}  {item['title']}  {item['orgin']}")
+                    print(f"抓取详情失败: {exc} 尝试次数：{attempt}  {item['title']}  {item['orgin']}  错误信息: {exc}")
                     time.sleep(1)
 
     # 保证最终数据的顺序一致性
-    linkList = [temp_dict[item['title']] for item in dataItems]
+    linkList = [temp_dict[item['title']] for item in dataItems if item['title'] in temp_dict]
     return {
         "categoryName": categoryName,
         "categoryDesc": categoryDesc,
+        "categoryShortDesc": categoryShortDesc,
         "categoryIcon": categoryIcon,
-        "linkList": linkList,
+        "categoryThumb" : categoryThumb,
         "categorySlogan": categorySlogan,
-        "categoryContent": categoryContent
+        "categoryContent": categoryContent,
+        "linkList": linkList,
     }
 
-
-def getData():
-    baseUrl = "https://theporndude.com/zh"
+def getData(baseUrl):
+    # baseUrl = "https://theporndude.com/zh"
     responseText = fetchData(baseUrl)
     if not responseText:
         print("请求主页失败：" + baseUrl)
@@ -139,6 +158,7 @@ def getData():
             f.write(jsonStr)
         print("=========数据存盘===========：" + f"./datas/outPornDude-{storgePage}.json")
         storgePage += 1
+
     # 加载更多异步数据
     pattern = r'https://assets.tpdfiles.com/includes/pi/zh..+.passive.info.js'
     matches = re.finditer(pattern, responseText)
@@ -159,10 +179,43 @@ def getData():
                             f.write(jsonStr)
                         print("=========数据存盘===========" + f"./datas/outPornDude-{storgePage}.json")
                         storgePage += 1
-
+        else:
+            print("请求js文件失败：" + match.group())
 
 if __name__ == '__main__':
-    r = getData()
+    # langUrl = [
+    #     "https://theporndude.com/en",
+    #     "https://theporndude.com/ar",
+    #     "https://theporndude.com/cs",
+    #     "https://theporndude.com/da",
+    #     "https://theporndude.com/de",
+    #     "https://theporndude.com/el",
+    #     "https://theporndude.com/es",
+    #     "https://theporndude.com/fi",
+    #     "https://theporndude.com/fr",
+    #     "https://theporndude.com/he",
+    #     "https://theporndude.com/hi",
+    #     "https://theporndude.com/hr",
+    #     "https://theporndude.com/hu",
+    #     "https://theporndude.com/id",
+    #     "https://theporndude.com/it",
+    #     "https://theporndude.com/ja",
+    #     "https://theporndude.com/ko",
+    #     "https://theporndude.com/nl",
+    #     "https://theporndude.com/no",
+    #     "https://theporndude.com/pl",
+    #     "https://theporndude.com/pt",
+    #     "https://theporndude.com/ro",
+    #     "https://theporndude.com/ru",
+    #     "https://theporndude.com/sl",
+    #     "https://theporndude.com/sv",
+    #     "https://theporndude.com/th",
+    #     "https://theporndude.com/tr",
+    #     "https://theporndude.com/vi",
+    #     "https://theporndude.com/zh",
+    # ]
+
+    getData("https://theporndude.com/zh")
     # print("获取分类数量：" + str(len(r)))
     # print("获取链接数量：" + str(sum([len(item["linkList"]) for item in r])))
     # jsonStr = json.dumps(r, ensure_ascii=False, indent=4)
