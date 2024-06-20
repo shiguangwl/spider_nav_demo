@@ -92,6 +92,7 @@ def spiderSite():
 
     return rData
 
+
 # 详情数据
 def spiderSiteDetail(linkDict):
     link = linkDict['link']
@@ -108,13 +109,12 @@ def spiderSiteDetail(linkDict):
 
     return {
         "title": title,
-        "content": content.replace(r'\n',''),
+        "content": content.replace(r'\n', ''),
         "siteLink": siteLink,
         "desc": desc,
         "seo_keywords": seo_keywords,
         "seo_description": seo_description
     }
-
 
 
 def getBlogDatas(categoryUrlList):
@@ -129,7 +129,8 @@ def getBlogDatas(categoryUrlList):
             htmlText = requests.get(url).text
             htmlTree = etree.HTML(htmlText)
             pageNum = int(htmlTree.xpath('//*[@class="posts-nav"]/*/text()')[-1])
-            categoryTitle = htmlTree.xpath("string(//*[@id='content']/div[1]/div/div[1]/h1)").replace(f'\r\n','').strip()
+            categoryTitle = htmlTree.xpath("string(//*[@id='content']/div[1]/div/div[1]/h1)").replace(f'\r\n',
+                                                                                                      '').strip()
             categoryDesc = htmlTree.xpath('string(//*[@id="content"]/div[1]/div/div[1]/p)').strip()
             for item in htmlTree.xpath('//*[@id="content"]/div[1]/div/div[2]/div'):
                 title = item.xpath('.//h2/a/@title')[0]
@@ -145,26 +146,30 @@ def getBlogDatas(categoryUrlList):
                     "title": title,
                     "desc": desc,
                     "link": link,
-                    "content" : detail['content'],
+                    "content": detail['content'],
                     "tags": detail['tags'],
                 })
             currentPageNum += 1
     return rData
 
 
-
 def spiderBlogDetail(link):
     htmlTree = etree.HTML(requests.get(link).text)
     title = htmlTree.xpath('//*[@id="content"]/main/div[1]/div/div[1]/div/div[1]/h1/text()')[0]
-    content = str(etree.tostring(htmlTree.xpath('//*[@id="content"]/main/div[1]/div/div[1]/div/div[3]')[0])).replace(r'\n','')[2:-1]
+    content = (etree.tostring(htmlTree.xpath('//*[@id="content"]/main/div[1]/div/div[1]/div/div[3]')[0], method='html',
+                              encoding='unicode')
+               .replace(r'\n', '')
+               .replace(r'007出海', '柒彩出海')
+               .replace(r'007TG', '柒彩出海')
+               .replace(r'href="https://007tg.com/ccs/007tg"', '')
+               .replace(r'href="https://007tg.com/contact-us/"', '')
+               )
     tags = htmlTree.xpath('//*[@id="content"]/main/div[1]/div/div[1]/div/div[4]/a/text()')
     return {
         "title": title,
         "content": content,
         "tags": tags
     }
-
-
 
 
 if __name__ == '__main__':
@@ -191,7 +196,3 @@ if __name__ == '__main__':
     #     f.write(jsonStr)
     # end = time.time()
     # logger.info("耗时：" + str(end - start))
-
-
-
-

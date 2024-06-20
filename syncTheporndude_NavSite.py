@@ -2,6 +2,7 @@
 
 import json
 import os
+import re
 
 import requests
 from pypinyin import pinyin, Style
@@ -10,7 +11,7 @@ from common.Logger import logger
 from spider.spider_admin import init, getCategoty, getLinkDescAll, addCategory, addLink
 
 
-Authorization = "Bearer eyJhbGciOiJIUzUxMiJ9.eyJsb2dpbl91c2VyX2tleSI6ImJmMTBkNjUwLWIzMmEtNDI1Ni05NWRiLTllMTljMGNlZDk2OCJ9.8xCqAdd9_QYWpNs7GDu4LSDw7wXzCOz-nDTwJl3xTZh2ZvHaiE7mEPAWfdClv823Zfp_GfLS7wF19lIl2mzmog"
+Authorization = "Bearer eyJhbGciOiJIUzUxMiJ9.eyJsb2dpbl91c2VyX2tleSI6ImI4Y2QwMjEyLWNmZDQtNDQ2OS05ZTk0LTljNTM1MDY0YzRhMyJ9.v0vs4WiUQE1U-VxLIiKC1Xxy1RU20M0rESl-k1gSrhCdBt6i01r5swpQ6VN-U-3lF9j9PDa8n5kW-GyHduqRYg"
 BaseApi = "http://127.0.0.1:8080"
 
 # 添加分类
@@ -18,12 +19,13 @@ def addCategory(
         title: str,
         alias: str,
         description: str,
-        categoryShortDesc: str,
+        categoryShort: str,
         content: str,
         icon: str,
         languageId: int,
         sort: int,
         slogan: str,
+        thumb: str
 ):
     """
     添加分类
@@ -32,12 +34,13 @@ def addCategory(
         "title": title,
         "alias": alias,
         "description": description,
-        "categoryShortDesc": categoryShortDesc,
+        "descriptionShort": categoryShort,
         "content": content,
         "icon": icon,
         "languageId": languageId,
         "sort": sort,
-        "slogan": slogan
+        "slogan": slogan,
+        "thumb": thumb
     }
     # 请求头
     headers = {
@@ -65,7 +68,8 @@ def addLink(
         languageId: int,
         sort: int,
         prosComment: str,
-        consComment: str
+        consComment: str,
+        flag: str
 ):
     """
     添加网址
@@ -83,7 +87,8 @@ def addLink(
         "languageId": languageId,
         "sort": sort,
         "prosComment": prosComment,
-        "consComment": consComment
+        "consComment": consComment,
+        "flag": flag
     }
     # 请求头
     headers = {
@@ -119,6 +124,18 @@ def chinese_to_pinyin(text):
 #         slogan="测试分类标语"
 #     )['data'])
 
+def remove_outer_div(html_string):
+    # 使用正则表达式查找最外层的div标签
+    pattern = r'^<div[^>]*>(.*?)</div>$'
+    match = re.search(pattern, html_string, re.DOTALL)
+
+    if match:
+        # 如果找到了最外层的div标签,返回去除div标签后的内容
+        return match.group(1)
+    else:
+        # 如果没有找到最外层的div标签,返回原始字符串
+        return html_string
+
 
 def syncData():
     logger.info("开始同步数据")
@@ -142,15 +159,17 @@ def syncData():
             title=item['categoryName'],
             alias=chinese_to_pinyin(item['categoryName']),
             description=item['categoryDesc'],
-            categoryShortDesc=item['categoryShortDesc'],
+            categoryShort=item['categoryShortDesc'],
             content=item['categoryContent'],
             icon=item['categoryIcon'],
             languageId=5,
             sort=0,
-            slogan=item['categorySlogan']
-        )['data']
+            slogan=item['categorySlogan'],
+            thumb=item['categoryThumb']
+        )
         logger.info("创建分类成功: " + item['categoryName'] + "  " + str(categoryId))
         # 创建分类下链接数据
+        item['linkList'].reverse()
         for linkItem in item['linkList']:
             addLink(
                 name=linkItem['title'],
@@ -161,11 +180,12 @@ def syncData():
                 url=linkItem['url'],
                 icon='',
                 preview=linkItem['thumbImg'],
-                categoryId=categoryId,
+                categoryId=categoryId['data'],
                 languageId=5,
                 sort=0,
                 prosComment=linkItem['prosComment'],
-                consComment=linkItem['consComment']
+                consComment=linkItem['consComment'],
+                flag=linkItem['flag']
             )
             logger.info("创建链接成功: " + linkItem['title'] + "  " + linkItem['url'])
 

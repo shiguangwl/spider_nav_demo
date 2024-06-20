@@ -21,6 +21,10 @@ def extractDetailData(link):
     htmlTree = etree.HTML(fetchData(link))
     url = htmlTree.xpath('//span[@data-site-domain]/text()')[0]
     content = etree.tostring(htmlTree.xpath('//div[@data-site-description]')[0], method='html', encoding='unicode')
+    content = content[
+                len('<div class="link-details-review clearfix scrollbox" data-site-description>'):
+                -len('</div>')
+    ]
     thumb_img = htmlTree.xpath('//img[@class="example-thumb-img"]/@src')[0]
     ratingCount = htmlTree.xpath('//*[@id="site-description"]/div[2]/div[2]/div[1]/div[2]/div/div/div[3]/span/text()')[0]
 

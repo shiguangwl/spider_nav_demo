@@ -14,10 +14,9 @@ if __name__ == '__main__':
     ]
 
     blogDatas = getBlogDatas(channels)
-    jsonStr = json.dumps(blogDatas)
     # 写入本地文件
     with open("outBlog.json", "w", encoding="utf-8") as f:
-        f.write(jsonStr)
+        f.write(json.dumps(blogDatas))
 
     # # 加载本地json数据
     # blogDatas = []
