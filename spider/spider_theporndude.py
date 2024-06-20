@@ -1,4 +1,5 @@
 import json
+import os
 import re
 import time
 from concurrent.futures import ThreadPoolExecutor, as_completed
@@ -142,6 +143,11 @@ def extractCategoryData(categoryElement):
     }
 
 def getData(baseUrl):
+    # 存盘路径
+    savePath = "./datas/" + baseUrl[-2:]
+    # 创建文件夹
+    if not os.path.exists(savePath):
+        os.makedirs(savePath)
     # baseUrl = "https://theporndude.com/zh"
     responseText = fetchData(baseUrl)
     if not responseText:
@@ -160,7 +166,7 @@ def getData(baseUrl):
         )
         with open(f"./datas/outPornDude-{storgePage}.json", "w", encoding="utf-8") as f:
             f.write(jsonStr)
-        print("=========数据存盘===========：" + f"./datas/outPornDude-{storgePage}.json")
+        print("=========数据存盘===========：" + f"{savePath}/outPornDude-{storgePage}.json")
         storgePage += 1
 
     # 加载更多异步数据
@@ -181,45 +187,47 @@ def getData(baseUrl):
                         jsonStr = json.dumps(extractCategoryData(categoryElement), ensure_ascii=False, indent=4)
                         with open(f"./datas/outPornDude-{storgePage}.json", "w", encoding="utf-8") as f:
                             f.write(jsonStr)
-                        print("=========数据存盘===========" + f"./datas/outPornDude-{storgePage}.json")
+                        print("=========数据存盘===========" + f"{savePath}/outPornDude-{storgePage}.json")
                         storgePage += 1
         else:
             print("请求js文件失败：" + match.group())
 
 if __name__ == '__main__':
-    # langUrl = [
-    #     "https://theporndude.com/en",
-    #     "https://theporndude.com/ar",
-    #     "https://theporndude.com/cs",
-    #     "https://theporndude.com/da",
-    #     "https://theporndude.com/de",
-    #     "https://theporndude.com/el",
-    #     "https://theporndude.com/es",
-    #     "https://theporndude.com/fi",
-    #     "https://theporndude.com/fr",
-    #     "https://theporndude.com/he",
-    #     "https://theporndude.com/hi",
-    #     "https://theporndude.com/hr",
-    #     "https://theporndude.com/hu",
-    #     "https://theporndude.com/id",
-    #     "https://theporndude.com/it",
-    #     "https://theporndude.com/ja",
-    #     "https://theporndude.com/ko",
-    #     "https://theporndude.com/nl",
-    #     "https://theporndude.com/no",
-    #     "https://theporndude.com/pl",
-    #     "https://theporndude.com/pt",
-    #     "https://theporndude.com/ro",
-    #     "https://theporndude.com/ru",
-    #     "https://theporndude.com/sl",
-    #     "https://theporndude.com/sv",
-    #     "https://theporndude.com/th",
-    #     "https://theporndude.com/tr",
-    #     "https://theporndude.com/vi",
-    #     "https://theporndude.com/zh",
-    # ]
+    langUrl = [
+        "https://theporndude.com/en",
+        "https://theporndude.com/ar",
+        "https://theporndude.com/cs",
+        "https://theporndude.com/da",
+        "https://theporndude.com/de",
+        "https://theporndude.com/el",
+        "https://theporndude.com/es",
+        "https://theporndude.com/fi",
+        "https://theporndude.com/fr",
+        "https://theporndude.com/he",
+        "https://theporndude.com/hi",
+        "https://theporndude.com/hr",
+        "https://theporndude.com/hu",
+        "https://theporndude.com/id",
+        "https://theporndude.com/it",
+        "https://theporndude.com/ja",
+        "https://theporndude.com/ko",
+        "https://theporndude.com/nl",
+        "https://theporndude.com/no",
+        "https://theporndude.com/pl",
+        "https://theporndude.com/pt",
+        "https://theporndude.com/ro",
+        "https://theporndude.com/ru",
+        "https://theporndude.com/sl",
+        "https://theporndude.com/sv",
+        "https://theporndude.com/th",
+        "https://theporndude.com/tr",
+        "https://theporndude.com/vi",
+        "https://theporndude.com/zh",
+    ]
+    for item in langUrl:
+        getData(item)
 
-    getData("https://theporndude.com/zh")
+    # getData("https://theporndude.com/zh")
     # print("获取分类数量：" + str(len(r)))
     # print("获取链接数量：" + str(sum([len(item["linkList"]) for item in r])))
     # jsonStr = json.dumps(r, ensure_ascii=False, indent=4)
