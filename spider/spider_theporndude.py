@@ -164,7 +164,7 @@ def getData(baseUrl):
             extractCategoryData(categoryElement),
             ensure_ascii=False, indent=4
         )
-        with open(f"./datas/outPornDude-{storgePage}.json", "w", encoding="utf-8") as f:
+        with open(f"{savePath}/outPornDude-{storgePage}.json", "w", encoding="utf-8") as f:
             f.write(jsonStr)
         print("=========数据存盘===========：" + f"{savePath}/outPornDude-{storgePage}.json")
         storgePage += 1
@@ -185,7 +185,7 @@ def getData(baseUrl):
                     categoryElements = categoryHtml.xpath('//div[contains(@id, "category-block-")]')
                     for categoryElement in categoryElements:
                         jsonStr = json.dumps(extractCategoryData(categoryElement), ensure_ascii=False, indent=4)
-                        with open(f"./datas/outPornDude-{storgePage}.json", "w", encoding="utf-8") as f:
+                        with open(f"{savePath}/outPornDude-{storgePage}.json", "w", encoding="utf-8") as f:
                             f.write(jsonStr)
                         print("=========数据存盘===========" + f"{savePath}/outPornDude-{storgePage}.json")
                         storgePage += 1
@@ -226,7 +226,13 @@ if __name__ == '__main__':
     # ]
     # for item in langUrl:
     #     getData(item)
+    #     time.sleep(60)
 
+
+    #
+    #
+    #
+    # sed -i 's|getData("https://theporndude.com/[^"]*")|getData("https://theporndude.com/ar")|g' spider_theporndude.py &&
     getData("https://theporndude.com/en")
     # print("获取分类数量：" + str(len(r)))
     # print("获取链接数量：" + str(sum([len(item["linkList"]) for item in r])))

@@ -158,11 +158,12 @@ def spiderBlogDetail(link):
     title = htmlTree.xpath('//*[@id="content"]/main/div[1]/div/div[1]/div/div[1]/h1/text()')[0]
     content = (etree.tostring(htmlTree.xpath('//*[@id="content"]/main/div[1]/div/div[1]/div/div[3]')[0], method='html',
                               encoding='unicode')
-               .replace(r'\n', '')
-               .replace(r'007出海', '柒彩出海')
-               .replace(r'007TG', '柒彩出海')
-               .replace(r'href="https://007tg.com/ccs/007tg"', '')
-               .replace(r'href="https://007tg.com/contact-us/"', '')
+               .replace('\n', '')
+               .replace('007出海', '柒彩出海')
+               .replace('007TG', '柒彩出海')
+               .replace('href="https://007tg.com/ccs/007tg"', '')
+               .replace('href="https://007tg.com/contact-us/"', '')
+               .replace('href="https://007tg.com/"', '')
                )
     tags = htmlTree.xpath('//*[@id="content"]/main/div[1]/div/div[1]/div/div[4]/a/text()')
     return {
