@@ -170,7 +170,7 @@ def getData(baseUrl):
         storgePage += 1
 
     # 加载更多异步数据
-    pattern = r'https://assets.tpdfiles.com/includes/pi/zh..+.passive.info.js'
+    pattern = r'https://assets.tpdfiles.com/includes/pi/.+.passive.info.js'
     matches = re.finditer(pattern, responseText)
     for match in matches:
         jsText = fetchData(match.group())
@@ -193,41 +193,41 @@ def getData(baseUrl):
             print("请求js文件失败：" + match.group())
 
 if __name__ == '__main__':
-    langUrl = [
-        "https://theporndude.com/en",
-        "https://theporndude.com/ar",
-        "https://theporndude.com/cs",
-        "https://theporndude.com/da",
-        "https://theporndude.com/de",
-        "https://theporndude.com/el",
-        "https://theporndude.com/es",
-        "https://theporndude.com/fi",
-        "https://theporndude.com/fr",
-        "https://theporndude.com/he",
-        "https://theporndude.com/hi",
-        "https://theporndude.com/hr",
-        "https://theporndude.com/hu",
-        "https://theporndude.com/id",
-        "https://theporndude.com/it",
-        "https://theporndude.com/ja",
-        "https://theporndude.com/ko",
-        "https://theporndude.com/nl",
-        "https://theporndude.com/no",
-        "https://theporndude.com/pl",
-        "https://theporndude.com/pt",
-        "https://theporndude.com/ro",
-        "https://theporndude.com/ru",
-        "https://theporndude.com/sl",
-        "https://theporndude.com/sv",
-        "https://theporndude.com/th",
-        "https://theporndude.com/tr",
-        "https://theporndude.com/vi",
-        "https://theporndude.com/zh",
-    ]
-    for item in langUrl:
-        getData(item)
+    # langUrl = [
+    #     "https://theporndude.com/en",
+    #     "https://theporndude.com/ar",
+    #     "https://theporndude.com/cs",
+    #     "https://theporndude.com/da",
+    #     "https://theporndude.com/de",
+    #     "https://theporndude.com/el",
+    #     "https://theporndude.com/es",
+    #     "https://theporndude.com/fi",
+    #     "https://theporndude.com/fr",
+    #     "https://theporndude.com/he",
+    #     "https://theporndude.com/hi",
+    #     "https://theporndude.com/hr",
+    #     "https://theporndude.com/hu",
+    #     "https://theporndude.com/id",
+    #     "https://theporndude.com/it",
+    #     "https://theporndude.com/ja",
+    #     "https://theporndude.com/ko",
+    #     "https://theporndude.com/nl",
+    #     "https://theporndude.com/no",
+    #     "https://theporndude.com/pl",
+    #     "https://theporndude.com/pt",
+    #     "https://theporndude.com/ro",
+    #     "https://theporndude.com/ru",
+    #     "https://theporndude.com/sl",
+    #     "https://theporndude.com/sv",
+    #     "https://theporndude.com/th",
+    #     "https://theporndude.com/tr",
+    #     "https://theporndude.com/vi",
+    #     "https://theporndude.com/zh",
+    # ]
+    # for item in langUrl:
+    #     getData(item)
 
-    # getData("https://theporndude.com/zh")
+    getData("https://theporndude.com/en")
     # print("获取分类数量：" + str(len(r)))
     # print("获取链接数量：" + str(sum([len(item["linkList"]) for item in r])))
     # jsonStr = json.dumps(r, ensure_ascii=False, indent=4)
