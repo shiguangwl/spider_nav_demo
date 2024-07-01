@@ -25,7 +25,8 @@ def addCategory(
         languageId: int,
         sort: int,
         slogan: str,
-        thumb: str
+        thumb: str,
+        homeCount: int
 ):
     """
     添加分类
@@ -40,7 +41,8 @@ def addCategory(
         "languageId": languageId,
         "sort": sort,
         "slogan": slogan,
-        "thumb": thumb
+        "thumb": thumb,
+        "homeCount": homeCount
     }
     # 请求头
     headers = {
@@ -69,7 +71,8 @@ def addLink(
         sort: int,
         prosComment: str,
         consComment: str,
-        flag: str
+        flag: str,
+        ratingCount: str
 ):
     """
     添加网址
@@ -88,7 +91,8 @@ def addLink(
         "sort": sort,
         "prosComment": prosComment,
         "consComment": consComment,
-        "flag": flag
+        "flag": flag,
+        "score": ratingCount
     }
     # 请求头
     headers = {
@@ -165,7 +169,8 @@ def syncData():
             languageId=5,
             sort=0,
             slogan=item['categorySlogan'],
-            thumb=item['categoryThumb']
+            thumb=item['categoryThumb'],
+            homeCount=item['homeCount']
         )
         logger.info("创建分类成功: " + item['categoryName'] + "  " + str(categoryId))
         # 创建分类下链接数据
@@ -183,13 +188,12 @@ def syncData():
                 categoryId=categoryId['data'],
                 languageId=5,
                 sort=0,
-                prosComment=linkItem['prosComment'],
-                consComment=linkItem['consComment'],
-                flag=linkItem['flag']
+                prosComment=linkItem['prosComment'].strip(),
+                consComment=linkItem['consComment'].strip(),
+                flag=linkItem['flag'],
+                ratingCount=linkItem['ratingCount']
             )
             logger.info("创建链接成功: " + linkItem['title'] + "  " + linkItem['url'])
-
-
 
 
 if __name__ == '__main__':
