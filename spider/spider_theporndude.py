@@ -17,7 +17,7 @@ def fetchData(url):
         return None
 
 
-# 抓取详情页内的数据
+# 抓取链接详情页内的数据
 def extractDetailData(link):
     htmlTree = etree.HTML(fetchData(link))
     url = htmlTree.xpath('//span[@data-site-domain]/text()')[0]
@@ -38,6 +38,11 @@ def extractDetailData(link):
     consLis = htmlTree.xpath('//*[@id="site-description"]/div[2]/div[2]/div[4]/ul[2]/li')
     for conLi in consLis:
         consComment += conLi.xpath('string(.)') + '\n'
+
+    # 获取SEO相关字段
+    # seoTitle = htmlTree.xpath('/html/head/title/text()')[0]
+    # seoDescription = htmlTree.xpath('/html/head/meta[@name="description"]/@content')[0]
+    # seoKeywords = htmlTree.xpath('/html/head/meta[@name="keywords"]/@content')[0]
 
     return {
         "url": url,
@@ -61,8 +66,38 @@ def extractCategoryIcon(iconClass):
         return "https://media.porndudecdn.com/includes" + match.group(1)
 
 
-# 抓取分类相关数据
+# 抓取指定分类的所有站点数据
+def extractSiteListByCategoryUrl(categoryUrl):
+    htmlText = requests.get(categoryUrl)
+    htmlTree = etree.HTML(htmlText.text)
+    siteDivList = htmlTree.xpath('//*[@data-site-id]')
+    siteList = []
+    for siteDiv in siteDivList:
+        title = siteDiv.xpath('.//a[@class="link"]/text()')[0].strip()
+        orgin = siteDiv.xpath('.//a[@class="link"]/@href')[0]
+        try:
+            desc = siteDiv.xpath('.//div[@class="url_short_desc"]/text()')[0]
+        except:
+            desc = ''
+        # 国旗
+        try:
+            flag = siteDiv.xpath('.//span[2]/@class')[0]
+        except:
+            flag = ''
+        siteList.append({
+            "title": title, # PornHub
+            "orgin": orgin, # https://theporndude.com/zh/566/pornhub
+            "desc": desc, # PornHub.com是世界上最大的免费色情分享网站之一，有超过110....
+            "flag": flag
+        })
+    return siteList
+
+# 抓取分类相关数据 传入html 或 element
 def extractCategoryData(categoryElement):
+    ## 判断是否为字符串
+    if isinstance(categoryElement, str):
+        categoryElement = etree.HTML(categoryElement)
+
     # 提取分类名称和描述
     categoryName = categoryElement.xpath('.//h2/a/text()')[0]
     categoryDesc = categoryElement.xpath('.//p[@class="desc"]/text()')[0]
@@ -73,10 +108,9 @@ def extractCategoryData(categoryElement):
     titleClass = categoryElement.xpath('.//h2/span/@class')[0]
     categoryIcon = extractCategoryIcon(titleClass.split(' ')[1])
     # 提取分类详情中的信息
+    categoryUrl = categoryElement.xpath('.//h2/a/@href')[0]
     categoryDetailTree = etree.HTML(
-        fetchData(
-            categoryElement.xpath('.//h2/a/@href')[0]
-        )
+        fetchData(categoryUrl)
     )
     categorySlogan = categoryDetailTree.xpath('/html/body/div[1]/div[2]/div/div[3]/h1/span[2]/text()')[0]
     categoryContent =etree.tostring(categoryDetailTree.xpath('.//div[contains(@class,"category-desc")]/.')[0],method='html', encoding='unicode')
@@ -91,19 +125,13 @@ def extractCategoryData(categoryElement):
         if item.xpath('.//span/text()')[0] == categoryName:
             categoryThumb = item.xpath('.//img/@data-src')[0]
             break
+
+    # # 包含data-visit-category-id的a标签
+    # categoryUrl = categoryElement.xpath('//*[@data-visit-category-id]/@href')[0]
     # 提取链接数据项
-    dataItems = []
-    for linkItem in categoryElement.xpath('.//ul/li'):
-        dataItem = {
-            "title": linkItem.xpath('string(./a)'),
-            "orgin": linkItem.xpath('.//a[contains(@class,"review")]/@href')[0],
-            "desc": linkItem.xpath('string(./p)'),
-        }
-        try:
-            dataItem["flag"] = linkItem.xpath('./span/@class')[0]
-        except Exception as e:
-            dataItem["flag"] = ""
-        dataItems.append(dataItem)
+    dataItems = extractSiteListByCategoryUrl(categoryUrl)
+    # 首页中展示的站点数量
+    homeCount = len(categoryElement.xpath('.//ul/li'))
 
     # 多线程抓取链接详情页数据
     temp_dict = {}
@@ -117,10 +145,11 @@ def extractCategoryData(categoryElement):
                     detail = future.result()
                     item.update({
                         'url': detail['url'],
-                        'content': detail['content'],
+                        'ratingCount': detail['ratingCount'],
+                        'thumbImg': detail['thumbImg'],
                         'prosComment': detail['prosComment'],
                         'consComment': detail['consComment'],
-                        'thumbImg': detail['thumbImg'],
+                        'content': detail['content'],
                     })
                     temp_dict[item['title']] = item
                     print(f"抓取数据成功： {item['title']}  {item['url']}")
@@ -132,13 +161,15 @@ def extractCategoryData(categoryElement):
     # 保证最终数据的顺序一致性
     linkList = [temp_dict[item['title']] for item in dataItems if item['title'] in temp_dict]
     return {
-        "categoryName": categoryName,
-        "categoryDesc": categoryDesc,
-        "categoryShortDesc": categoryShortDesc,
-        "categoryIcon": categoryIcon,
-        "categoryThumb" : categoryThumb,
-        "categorySlogan": categorySlogan,
-        "categoryContent": categoryContent,
+        "categoryName": categoryName,  # 免费色情视频网站
+        "categoryDesc": categoryDesc,  # 在世界上最流行的色情视频网站上观看免费的高清色情视频....
+        "categoryShortDesc": categoryShortDesc, # 在XXX世界中最流行的色情视频网站上观看免费的色情视频。
+        "categoryIcon": categoryIcon, # https://media.porndudecdn.com/includes/images/categories/FREE-PORN-TUBE-SITES.svg
+        "categoryThumb" : categoryThumb, # https://assets.tpdfiles.com/includes/images/cthumbnails/43_30b29_thumb.png
+        "categorySlogan": categorySlogan, # 免费色情视频网站
+        "categoryContent": categoryContent, #<div>xxxx</div>
+        "homeCount": homeCount, # 首页展示的数量
+        "allCount": len(linkList), # 当前分类所有站点数量
         "linkList": linkList,
     }
 
