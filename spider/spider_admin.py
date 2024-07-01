@@ -639,39 +639,69 @@ def syncMenu():
 #             "全球随机号码生成"
 #         ]
 #     },
+# def postBlog(postData):
+#     # 网站的发文账户
+#     id = "admin"
+#     password = "admin123"
+#     url = f"{domain}/xmlrpc.php"
+#
+#     which = "publish"
+#     # which = "draft"
+#
+#     # 建立客户端
+#     wp = Client(url, id, password)
+#     content = postData['content']
+#     content = content.replace('007TG', '柒彩出海导航')
+#
+#     tags = postData['tags']
+#     for i in range(len(tags)):
+#         tags[i] = tags[i].replace('007TG', '柒彩出海').replace('007出海', '柒彩出海')
+#
+#     title = postData['title'].replace('007TG', '').replace('007出海', '柒彩出海')
+#     # 建立新文章
+#     post = WordPressPost()
+#     post.post_status = which
+#     post.title = title.replace('007TG', '')
+#     post.content = content
+#     post.excerpt = postData['desc'].replace('007TG', '柒彩出海')
+#     post.terms_names = {
+#         'category': [postData['categoryTitle']],
+#         "post_tag": tags
+#     }
+#
+#     # 发表文章
+#     wp.call(NewPost(post))
 def postBlog(postData):
     # 网站的发文账户
     id = "admin"
     password = "admin123"
+    domain = "https://your-wordpress-site.com"  # 添加域名变量
     url = f"{domain}/xmlrpc.php"
 
-    which = "publish"
-    # which = "draft"
-
+    which = "publish"  # 可切换为 "draft"
     # 建立客户端
     wp = Client(url, id, password)
-    content = postData['content']
-    content = content.replace('007TG', '柒彩出海导航')
-
-    tags = postData['tags']
-    for i in range(len(tags)):
-        tags[i] = tags[i].replace('007TG', '柒彩出海').replace('007出海', '柒彩出海')
-
+    # 处理文章内容
+    content = postData['content'].replace('007TG', '柒彩出海导航')
+    # 处理标签
+    tags = [tag.replace('007TG', '柒彩出海').replace('007出海', '柒彩出海') for tag in postData['tags']]
+    # 处理标题
     title = postData['title'].replace('007TG', '').replace('007出海', '柒彩出海')
+    # 处理摘要
+    excerpt = postData['desc'].replace('007TG', '柒彩出海')
     # 建立新文章
     post = WordPressPost()
     post.post_status = which
-    post.title = title.replace('007TG', '')
+    post.title = title
     post.content = content
-    post.excerpt = postData['desc'].replace('007TG', '柒彩出海')
+    post.excerpt =excerpt
     post.terms_names = {
         'category': [postData['categoryTitle']],
-        "post_tag": tags
+        'post_tag': tags
     }
 
     # 发表文章
     wp.call(NewPost(post))
-
 
 def getPost():
     init()
