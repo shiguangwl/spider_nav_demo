@@ -11,9 +11,10 @@ from common.Logger import logger
 from spider.spider_admin import init, getCategoty, getLinkDescAll, addCategory, addLink
 
 
-Authorization = "Bearer eyJhbGciOiJIUzUxMiJ9.eyJsb2dpbl91c2VyX2tleSI6ImI4Y2QwMjEyLWNmZDQtNDQ2OS05ZTk0LTljNTM1MDY0YzRhMyJ9.v0vs4WiUQE1U-VxLIiKC1Xxy1RU20M0rESl-k1gSrhCdBt6i01r5swpQ6VN-U-3lF9j9PDa8n5kW-GyHduqRYg"
+Authorization = "Bearer eyJhbGciOiJIUzUxMiJ9.eyJsb2dpbl91c2VyX2tleSI6IjRiNzFhMTQyLTQ5YTktNDM0OS05YTgyLTdiYzQ2NDNiZDRlNCJ9.BsOWnzRSwkfvV8whfiPqjnOooQQiHcwaOqIO1jkYLw5-0Ah_5JvXaAbLn-x4eRJ4ZnGbKNoEEh0yyXHNSJsTsg"
 BaseApi = "http://127.0.0.1:8080"
-
+LanguagePath = 'ar'
+LanguageId = 7
 # 添加分类
 def addCategory(
         title: str,
@@ -123,7 +124,7 @@ def chinese_to_pinyin(text):
 #         description="测试分类描述",
 #         content="测试分类正文",
 #         icon="测试分类图标",
-#         languageId=5,
+#         languageId=LanguageId,
 #         sort=0,
 #         slogan="测试分类标语"
 #     )['data'])
@@ -146,11 +147,11 @@ def syncData():
     # 加载本地json数据
     datas = []
     # 读取本地datas文件夹中文件数量,确保顺序
-    files = os.listdir('./spider/datas')
+    files = os.listdir(f'./spider/datas/{LanguagePath}')
     for i in range(len(files)):
         # 读取 outPornDude-{i}.json
         try:
-            with open(f"./spider/datas/outPornDude-{i}.json", "r", encoding="utf-8") as f:
+            with open(f"./spider/datas/{LanguagePath}/outPornDude-{i}.json", "r", encoding="utf-8") as f:
                 data = json.load(f)
                 data['linkList'].reverse()
                 datas.append(data)
@@ -166,7 +167,7 @@ def syncData():
             categoryShort=item['categoryShortDesc'],
             content=item['categoryContent'],
             icon=item['categoryIcon'],
-            languageId=5,
+            languageId=LanguageId,
             sort=0,
             slogan=item['categorySlogan'],
             thumb=item['categoryThumb'],
@@ -186,7 +187,7 @@ def syncData():
                 icon='',
                 preview=linkItem['thumbImg'],
                 categoryId=categoryId['data'],
-                languageId=5,
+                languageId=LanguageId,
                 sort=0,
                 prosComment=linkItem['prosComment'].strip(),
                 consComment=linkItem['consComment'].strip(),

@@ -225,7 +225,7 @@ def getData(baseUrl):
 
 if __name__ == '__main__':
     langUrl = [
-        "https://theporndude.com/en",
+        # "https://theporndude.com/en",
         "https://theporndude.com/ar",
         "https://theporndude.com/cs",
         "https://theporndude.com/da",
@@ -264,7 +264,7 @@ if __name__ == '__main__':
     #
     #
     # sed -i 's|getData("https://theporndude.com/[^"]*")|getData("https://theporndude.com/ar")|g' spider_theporndude.py &&
-    getData("https://theporndude.com/zh")
+    getData("https://theporndude.com/ar")
     # print("获取分类数量：" + str(len(r)))
     # print("获取链接数量：" + str(sum([len(item["linkList"]) for item in r])))
     # jsonStr = json.dumps(r, ensure_ascii=False, indent=4)
