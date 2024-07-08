@@ -10,8 +10,38 @@ from pypinyin import pinyin, Style
 from common.Logger import logger
 from spider.spider_admin import init, getCategoty, getLinkDescAll, addCategory, addLink
 
-
-Authorization = "Bearer eyJhbGciOiJIUzUxMiJ9.eyJsb2dpbl91c2VyX2tleSI6IjRiNzFhMTQyLTQ5YTktNDM0OS05YTgyLTdiYzQ2NDNiZDRlNCJ9.BsOWnzRSwkfvV8whfiPqjnOooQQiHcwaOqIO1jkYLw5-0Ah_5JvXaAbLn-x4eRJ4ZnGbKNoEEh0yyXHNSJsTsg"
+LanguageCodeIdMap = {
+    # 5: "zh",
+    # 6: "en",
+    # 7: "ar",
+    # 8: "cs",
+    # 9: "da",
+    # 10: "de",
+    # 11: "el",
+    # 12: "es",  # TODO 待采集
+    13: "fi",
+    14: "fr",
+    15: "he",
+    16: "hi",
+    17: "hr",
+    18: "hu",
+    19: "id",
+    20: "it",
+    21: "ja",
+    22: "ko",
+    23: "nl",
+    24: "no",
+    25: "pl",
+    26: "pt",
+    27: "ro",
+    28: "ru",
+    29: "sl",
+    # 30: "sv",  # TODO 待采集
+    # 31: "th",  # TODO 待采集
+    # 32: "tr",  # TODO 待采集
+    # 33: "vi"  # TODO 待采集
+}
+Authorization = "Bearer eyJhbGciOiJIUzUxMiJ9.eyJsb2dpbl91c2VyX2tleSI6IjY5N2RhNGI1LWIxNzktNGIzOS05NmJlLTlmNTlhZjZkZWQ2OCJ9.PUz77dKnyKc3qY1S2Mh1wR4sapBW6cDk4X7d3HyjHa2SBAtN-L3x94DubftjM1S-48Q5glUsCFMM498h1rIMLg"
 BaseApi = "http://127.0.0.1:8080"
 LanguagePath = 'ar'
 LanguageId = 7
@@ -143,7 +173,7 @@ def remove_outer_div(html_string):
 
 
 def syncData():
-    logger.info("开始同步数据")
+    logger.info("开始同步数据:" + LanguagePath)
     # 加载本地json数据
     datas = []
     # 读取本地datas文件夹中文件数量,确保顺序
@@ -198,11 +228,13 @@ def syncData():
 
 
 if __name__ == '__main__':
-    # testAddCategory()
-
-    syncData()
-
-
+    # # testAddCategory()
+    # syncData()
+    # 遍历所有 LanguageCodeIdMap
+    for key, value in LanguageCodeIdMap.items():
+        LanguagePath = value
+        LanguageId = key
+        syncData()
 
     # logger.info("开始同步数据")
     #
