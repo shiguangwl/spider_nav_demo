@@ -18,30 +18,30 @@ LanguageCodeIdMap = {
     # 9: "da",
     # 10: "de",
     # 11: "el",
-    # 12: "es",  # TODO 待采集
-    13: "fi",
-    14: "fr",
-    15: "he",
-    16: "hi",
-    17: "hr",
-    18: "hu",
-    19: "id",
-    20: "it",
-    21: "ja",
-    22: "ko",
-    23: "nl",
-    24: "no",
-    25: "pl",
-    26: "pt",
-    27: "ro",
-    28: "ru",
-    29: "sl",
-    # 30: "sv",  # TODO 待采集
-    # 31: "th",  # TODO 待采集
-    # 32: "tr",  # TODO 待采集
-    # 33: "vi"  # TODO 待采集
+    # 12: "es",
+    # 13: "fi",
+    # 14: "fr",
+    # 15: "he",
+    # 16: "hi",
+    # 17: "hr",
+    # 18: "hu",
+    # 19: "id",
+    # 20: "it",
+    # 21: "ja",
+    # 22: "ko",
+    # 23: "nl",
+    # 24: "no",
+    # 25: "pl",
+    # 26: "pt",
+    # 27: "ro",
+    # 28: "ru",
+    # 29: "sl",
+    # 30: "sv",
+    # 31: "th",
+    # 32: "tr",
+    # 33: "vi"
 }
-Authorization = "Bearer eyJhbGciOiJIUzUxMiJ9.eyJsb2dpbl91c2VyX2tleSI6IjY5N2RhNGI1LWIxNzktNGIzOS05NmJlLTlmNTlhZjZkZWQ2OCJ9.PUz77dKnyKc3qY1S2Mh1wR4sapBW6cDk4X7d3HyjHa2SBAtN-L3x94DubftjM1S-48Q5glUsCFMM498h1rIMLg"
+Authorization = "Bearer eyJhbGciOiJIUzUxMiJ9.eyJsb2dpbl91c2VyX2tleSI6IjhiNWUzYTA5LTQ5ZDctNDFlZC1iZjU2LTliYjZjMzY0OTUwOCJ9.0-E2mUGuzNB0VIycvoAF3UNbUHuUG4STYU60GKeG_0rxHdRV0VPnTfzbNDp96b5m7vcQUo_foxIUZNOa8RV_Xg"
 BaseApi = "http://127.0.0.1:8080"
 LanguagePath = 'ar'
 LanguageId = 7

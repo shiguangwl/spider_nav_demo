@@ -249,10 +249,10 @@ if __name__ == '__main__':
         # "https://theporndude.com/ro",
         # "https://theporndude.com/ru",
         # "https://theporndude.com/sl",
-        "https://theporndude.com/sv",
-        "https://theporndude.com/th",
-        "https://theporndude.com/tr",
-        "https://theporndude.com/vi",
+        # "https://theporndude.com/sv",
+        # "https://theporndude.com/th",
+        # "https://theporndude.com/tr",
+        # "https://theporndude.com/vi",
         # "https://theporndude.com/zh",
     ]
     # for item in langUrl:
@@ -265,14 +265,7 @@ if __name__ == '__main__':
     #
     # sed -i 's|getData("https://theporndude.com/[^"]*")|getData("https://theporndude.com/ar")|g' spider_theporndude.py &&
     print("开始执行采集任务...")
-    # getData("https://theporndude.com/pt")
-    # getData("https://theporndude.com/ro")
-    # getData("https://theporndude.com/ru")
-    getData("https://theporndude.com/sl")
-    getData("https://theporndude.com/sv")
-    getData("https://theporndude.com/th")
-    # getData("https://theporndude.com/tr")
-    # getData("https://theporndude.com/vi")
+    getData("https://theporndude.com/es")
     # print("获取分类数量：" + str(len(r)))
     # print("获取链接数量：" + str(sum([len(item["linkList"]) for item in r])))
     # jsonStr = json.dumps(r, ensure_ascii=False, indent=4)
